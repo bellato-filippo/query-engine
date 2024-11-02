@@ -15,7 +15,7 @@ class Term(val name: String, val termType: TermType):
             name
 
 class Variable(name: String) extends Term(name, TermType.Var)
-class Constant(name: String, value: String) extends Term(name, TermType.Cons)
+class Constant(name: String) extends Term(name, TermType.Cons)
 
 class Atom(val name: String, val terms: List[Term]):
     override def equals(that: Any): Boolean = that match
