@@ -29,7 +29,7 @@ class Head(terms: List[Term]) extends Atom("Answer", terms)
 
 class Query(val queryId: Int, val head: Head, val body: Set[Atom]):
     override def equals(that: Any): Boolean = that match
-        case q: Query => this.queryId == q.queryId && this.head == q.head && this.body == q.body
+        case q: Query => this.queryId == q.queryId && this.head == q.head && this.body.toSet == q.body.toSet
         case _ => false
     
     override def toString(): String = 
