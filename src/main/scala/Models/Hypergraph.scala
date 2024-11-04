@@ -2,7 +2,7 @@ package Models
 
 class Hypergraph(val q: Query):
     val vertices: Set[Term] = q.body.flatMap(_.terms)
-    val edges: Set[Set[Term]] = q.body.map(atom => atom.terms.toSet)
+    var edges: Set[Set[Term]] = q.body.map(atom => atom.terms.toSet)
 
     //controllo se ci sono vertici contenuti in altri edges e ottengo il set di term contenuti in altri edge
     def containedVertices(edge: Set[Term]): Set[Term] = {

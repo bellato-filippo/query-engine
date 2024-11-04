@@ -1,5 +1,6 @@
 package Models
 
+
 enum TermType:
     case Var, Cons
 
@@ -34,3 +35,24 @@ class Query(val queryId: Int, val head: Head, val body: Set[Atom]):
     
     override def toString(): String = 
         s"${head.toString()} :- ${body.map(_.toString).mkString(",")}"
+    
+    def GyoAlgorithm(hypergraph: Hypergraph): Hypergraph =
+        //per ogni edge guardo se è un orecchio
+        if (hypergraph.edges.isEmpty)
+          return hypergraph
+
+        hypergraph.edges.foreach(e => {
+            if (hypergraph.isEar(e)) {
+                hypergraph.edges = hypergraph.edges - e
+                println("we remove the edge: " + e)
+                return GyoAlgorithm(hypergraph)
+            }
+        })
+        hypergraph
+        
+    def isAcyclic: Boolean =
+        val h: Hypergraph = new Hypergraph(this)
+        val acyclic: Hypergraph = GyoAlgorithm(h)
+        return acyclic.edges.isEmpty
+            //se l'edge e è un ear allora lo rimuovo
+            //richiamo la funzione GYOAlghoritm
