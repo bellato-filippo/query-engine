@@ -31,6 +31,9 @@ class Query(val queryId: Int, val head: Head, val body: Set[Atom]):
     override def equals(that: Any): Boolean = that match
         case q: Query => this.queryId == q.queryId && this.head == q.head && this.body.toSet == q.body.toSet
         case _ => false
+
+    def isContainedIn(query: Query): Boolean = 
+        Container.contains(this, query)
     
     override def toString(): String = 
         s"${head.toString()} :- ${body.map(_.toString).mkString(",")}"
