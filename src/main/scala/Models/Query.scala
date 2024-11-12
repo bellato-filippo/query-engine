@@ -46,8 +46,17 @@ class Query(val queryId: Int, val head: Head, val body: Set[Atom]):
         case q: Query => this.queryId == q.queryId && this.head == q.head && this.body.toSet == q.body.toSet
         case _ => false
 
-    def isContainedIn(query: Query): Boolean = 
-        Container.contains(this, query)
+    infix def isContainedIn(query: Query): Boolean = 
+        Container.isContainedIn(this, query)
+    
+    def isMinimal(): Boolean = 
+        var sonar = true
+        for (atom <- body) {
+            val smallerQuery: Query = Query(queryId, head, body - atom)
+            if (Container.isContainedIn(this, smallerQuery) && Container.isContainedIn(smallerQuery, this))
+                sonar = false
+        }
+        sonar
     
     override def toString(): String = 
         s"${head.toString()} :- ${body.map(_.toString).mkString(",")}"
