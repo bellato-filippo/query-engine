@@ -1,5 +1,7 @@
 package Models
 
+import java.io._
+
 
 enum TermType:
     case Var, Cons
@@ -29,6 +31,9 @@ class Atom(val name: String, val terms: List[Term]):
 class Head(terms: List[Term]) extends Atom("Answer", terms)
 
 class Query(val queryId: Int, val head: Head, val body: Set[Atom]):
+    val path = s"./src/test/results/test-aciclicity-${this.queryId}.txt"
+    private val writer = new PrintWriter(new FileWriter(path, true))
+
     override def equals(that: Any): Boolean = that match
         case q: Query => this.queryId == q.queryId && this.head == q.head && this.body.toSet == q.body.toSet
         case _ => false
@@ -44,20 +49,21 @@ class Query(val queryId: Int, val head: Head, val body: Set[Atom]):
         hypergraph.edges.foreach(e => {
             if (hypergraph.isEar(e)) {
                 hypergraph.edges = hypergraph.edges - e
-                println("We remove the ear: " + e)
-                println("Current hypergraph edges are: " + hypergraph.edges.map(_.mkString("{",", ","}")).mkString("; ") )
+                writer.println("We remove the ear: " + e)
+                writer.println("Current hypergraph edges are: " + hypergraph.edges.map(_.mkString("{",", ","}")).mkString("; ") )
                 return GyoAlgorithm(hypergraph)
             }
         })
         hypergraph
         
     def isAcyclic: Boolean =
-        println("GYO for query: " + this.toString())
+        writer.println("GYO for query: " + this.toString())
         val h: Hypergraph = new Hypergraph(this)
         val acyclic: Hypergraph = GyoAlgorithm(h)
         if(acyclic.edges.nonEmpty)
-          println("no more ears")
-        else println("Algorithm terminate with an empty query")
+          writer.println("no more ears")
+        else writer.println("Algorithm terminate with an empty query")
+        writer.close()
         acyclic.edges.isEmpty
             //se l'edge e è un ear allora lo rimuovo
             //richiamo la funzione GYOAlghoritm
