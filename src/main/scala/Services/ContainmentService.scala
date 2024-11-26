@@ -1,23 +1,20 @@
-package Models
+package Services
 
 import scala.collection.mutable
 import scala.compiletime.ops.boolean
+import Models.*
 
-object Container:
-    def isContainedIn(a: Query, b: Query): Boolean = 
-        // xy
+object ContainmentService:
+    def isContainedIn(a: Query, b: Query, log: Boolean = true): Boolean = 
         val termsQueryA: Set[Term] = extractTermsFromQuery(a)
-        // uv
         val termsQueryB: Set[Term] = extractTermsFromQuery(b)
 
+        // generates all possible homomorphisms of the two queries B -> A
         val possibleHomomorphisms: List[Homomorphism] = generateAllHomomorphisms(termsQueryB, termsQueryA)
-
-        // possibleHomomorphisms.foreach(u => println(u.toString()))
 
         val candidates: List[Query] = possibleHomomorphisms.map(homo => {
             substituteQueryTerms(b, homo)
         })
-        // candidates.foreach(u => println(u.toString()))
 
         someCandidateContained(a, candidates)
 
@@ -67,9 +64,4 @@ object Container:
 
 
     def extractTermsFromQuery(query: Query): Set[Term] =
-        val setOfTerms: mutable.Set[Term] = mutable.Set[Term]()
-        setOfTerms.addAll(query.head.terms)
-        query.body.foreach(atom => {
-            setOfTerms.addAll(atom.terms)
-        })
-        setOfTerms.toSet
+        query.head.terms.toSet ++ query.body.flatMap(_.terms).toSet
