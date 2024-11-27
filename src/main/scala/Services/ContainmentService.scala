@@ -3,6 +3,7 @@ package Services
 import scala.collection.mutable
 import scala.compiletime.ops.boolean
 import Models.*
+import scala.annotation.switch
 
 object ContainmentService:
     def isContainedIn(a: Query, b: Query, log: Boolean = true): Boolean = 
@@ -12,11 +13,54 @@ object ContainmentService:
         // generates all possible homomorphisms of the two queries B -> A
         val possibleHomomorphisms: List[Homomorphism] = generateAllHomomorphisms(termsQueryB, termsQueryA)
 
-        val candidates: List[Query] = possibleHomomorphisms.map(homo => {
-            substituteQueryTerms(b, homo)
-        })
+        val validHomomorphism: Option[Homomorphism] = validHomomorphismExists(a, b, possibleHomomorphisms.filter(u => u.isValid()))
 
-        someCandidateContained(a, candidates)
+        if (log)
+            println(s"q1 is: $a")
+            println(s"q2 is: $b")
+
+        validHomomorphism.filter(u => u.isValid()) match {
+            case Some(homomorphism) => 
+                if (log)
+                    println(s"A possible homomorphism h from q2 to q1 contains the following mappings:")
+                    println(homomorphism)
+                    println(s"Then h(q2) is: ${substituteQueryTerms(b, homomorphism)}")
+                true
+            case None => 
+                if (log)
+                    println("A possible counterexample database D contains the following atoms:")
+                    val database = createCounterexampleDatabase(a, b)
+                    println(database.map(value => s"${value.toString}").mkString("\n"))
+                    val outputValue = computeQueryOnDatabase(a, database)
+                    println(s"Then q1(D) contains the tuple $outputValue")
+                    println(s"However, $outputValue is not in q2(D) since q2(D) is empty.")
+                false
+        }
+
+    def computeQueryOnDatabase(query: Query, database: Set[Atom]): String =
+        val mapping: mutable.Map[Term, Term] = mutable.Map.empty                       
+        // create map
+        for (atom <- query.body)
+            val databaseAtomOption = database.find(item => item.name == atom.name)
+            databaseAtomOption match
+                case Some(databaseAtom) =>
+                    for (i <- atom.terms.indices)
+                        mapping += (atom.terms(i) -> databaseAtom.terms(i))
+                case None =>
+
+        "(" + query.head.terms.map(element => {s"${mapping(element).toString}"}).mkString(",") + ")"
+
+    def createCounterexampleDatabase(a: Query, b: Query): Set[Atom] =
+        val database: mutable.Set[Atom] = mutable.Set.empty
+        for (atom <- a.body)
+            database += Atom(atom.name, atom.terms.map(term => Constant(term.name)))
+        database.toSet
+
+    def validHomomorphismExists(a: Query, b: Query, possibleHomomorphisms: List[Homomorphism]): Option[Homomorphism] =
+        possibleHomomorphisms.find { homomorphism =>
+            val substitutedQuery: Query = substituteQueryTerms(b, homomorphism)
+            substitutedQuery.equals(a)
+        }
 
     def someCandidateContained(query: Query, candidates: List[Query]): Boolean =
         candidates.exists { candidate =>
@@ -45,22 +89,22 @@ object ContainmentService:
         
 
     def generateAllHomomorphisms(source: Set[Term], destination: Set[Term]): List[Homomorphism] =
-        // Step 1: Generate all possible mappings from each element in `source` to any element in `destination`
-        val possibleMappings: List[List[(Term, Term)]] = source.toList.map { term =>
-            destination.toList.map(d => term -> d)
-        }
+        val possibleMappings = generateAllMappings(source, destination)
+        possibleMappings.map(mapping => {
+            Homomorphism(source, destination, mapping)
+        })
 
-        // Step 2: Create Cartesian product of mappings for each term
-        val allCombinations: List[Map[Term, Term]] = possibleMappings.foldLeft(List(Map.empty[Term, Term])) {
-            (acc, mappings) =>
-            for {
-                map <- acc
-                (term, dest) <- mappings
-            } yield map + (term -> dest)
-        }
 
-        // Step 3: Create Homomorphisms
-        allCombinations.map(map => new Homomorphism(source, destination, map))
+    def generateAllMappings(source: Set[Term], destination: Set[Term]): List[Map[Term, Term]] =
+        var mappings: mutable.ListBuffer[Map[Term, Term]] = mutable.ListBuffer[Map[Term, Term]](Map.empty)
+        for (sourceTerm <- source)
+            val currentMappings: mutable.ListBuffer[Map[Term, Term]] = mutable.ListBuffer.empty
+            for (mapping <- mappings)
+                for (destinationTerm <- destination)
+                    val newMapping = mapping + (sourceTerm -> destinationTerm)
+                    currentMappings += newMapping
+            mappings = currentMappings
+        mappings.toList
 
 
     def extractTermsFromQuery(query: Query): Set[Term] =

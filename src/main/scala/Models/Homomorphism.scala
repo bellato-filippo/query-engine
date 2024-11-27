@@ -7,15 +7,10 @@ import scala.collection.BuildFrom.buildFromString
 
 case class Homomorphism(val source: Set[Term], val destination: Set[Term], val map: Map[Term, Term]):
     override def toString(): String =
-        var s: String = ""
-        // s = "------------------------------------------------------------\n"
+        map.map { case (key, value) =>
+            s"${key.toString} to ${value.toString}"
+        }.mkString("\n")
 
-        // s += s"Source -> ${source.toString()}\n"
-        // s += s"Destination -> ${destination.toString()}\n"
-        // s += s"Mapping -> ${map.toString()}"
-        s += s"(S: ${source.toString()}, D: ${destination.toString()}, M: ${map.toString()})"
-
-        s
 
 
     def isMapValidForSource(): Boolean = 
