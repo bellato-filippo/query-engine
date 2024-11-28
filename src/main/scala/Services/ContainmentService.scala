@@ -7,45 +7,64 @@ import scala.annotation.switch
 
 object ContainmentService:
     def isContainedIn(a: Query, b: Query, log: Boolean = true): Boolean = 
-        if (a.head.terms.length != b.head.terms.length)
-            if (log)
-                println("q1 and q2 have head atoms with different arities.")
+        if (a.head.terms.length != b.head.terms.length) {
+            if (log) println("q1 and q2 have head atoms with different arities.")
             return false
-        
-        val termsQueryA: Set[Term] = extractTermsFromQuery(a)
-        val termsQueryB: Set[Term] = extractTermsFromQuery(b)
-        
-        // println("First query: " + a)
-        // println("Second query: " + b)
-        // generates all possible homomorphisms of the two queries B -> A
-        val possibleHomomorphisms: List[Homomorphism] = generateAllHomomorphisms(termsQueryB, termsQueryA)
-        // println("Possible homomorphisms: " + possibleHomomorphisms.length)
+        }
 
-        val filteredHomomorphism = possibleHomomorphisms.filter(u => u.isValid())
+        val validHomomorphism = generateValidHomomorphism(a, b)
 
-        val validHomomorphism: Option[Homomorphism] = validHomomorphismExists(a, b, filteredHomomorphism)
-
-        if (log)
+        if (log) {
             println(s"q1 is: $a")
             println(s"q2 is: $b")
+        }
 
-        validHomomorphism.filter(u => u.isValid()) match {
-            case Some(homomorphism) => 
-                if (log)
+        validHomomorphism match {
+            case Some(homomorphism) =>
+                if (log) {
                     println(s"A possible homomorphism h from q2 to q1 contains the following mappings:")
                     println(homomorphism)
                     println(s"Then h(q2) is: ${substituteQueryTerms(b, homomorphism)}")
+                }
                 true
-            case None => 
-                if (log)
+            case None =>
+                if (log) {
                     println("A possible counterexample database D contains the following atoms:")
                     val database = createCounterexampleDatabase(a, b)
-                    println(database.map(value => s"${value.toString}").mkString("\n"))
+                    println(database.map(_.toString).mkString("\n"))
                     val outputValue = computeQueryOnDatabase(a, database)
                     println(s"Then q1(D) contains the tuple $outputValue")
                     println(s"However, $outputValue is not in q2(D) since q2(D) is empty.")
+                }
                 false
         }
+
+    def generateValidHomomorphism(a: Query, b: Query): Option[Homomorphism] = {
+        val termsQueryA = extractTermsFromQuery(a)
+        val termsQueryB = extractTermsFromQuery(b)
+        generateValidMapping(termsQueryB.toList, termsQueryA.toSet, Map.empty, a, b)
+    }
+
+    def generateValidMapping(
+        source: List[Term],
+        destination: Set[Term],
+        currentMapping: Map[Term, Term],
+        a: Query,
+        b: Query
+    ): Option[Homomorphism] = source match {
+        case Nil =>
+            // All terms in the source are mapped; validate the current mapping
+            val homomorphism = Homomorphism(source.toSet, destination, currentMapping)
+            if (atomsContained(substituteQueryTerms(b, homomorphism), a)) Some(homomorphism)
+            else None
+
+        case sourceTerm :: remainingSource =>
+            // Try mapping the current sourceTerm to each term in the destination
+            destination.view.flatMap { destinationTerm =>
+                val updatedMapping = currentMapping + (sourceTerm -> destinationTerm)
+                generateValidMapping(remainingSource, destination, updatedMapping, a, b)
+            }.headOption // Short-circuit if a valid homomorphism is found
+    }
 
     def computeQueryOnDatabase(query: Query, database: Set[Atom]): String =
         val mapping: mutable.Map[Term, Term] = mutable.Map.empty                       

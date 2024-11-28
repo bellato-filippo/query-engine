@@ -15,7 +15,7 @@ object Main extends App:
 
 	// println(ContainmentService.extractTermsFromQuery(q2))
 
-	val q = QueryParserService.parse("Answer(x) :- R1(x, y, w, z), R1(x, w, x, y), R1(x, y, w, s), R2(u, v), R2(s, t), R2(v, u)")
+	val q = QueryParserService.parse("Answer(y) :- R1(x, y), R1(v, u), R1(v, y), R2(v, x, u, y), R2(u, y, v, x)")
 	QueryMinimizerService.isMinimal(q)
 
 	// q1 isContainedIn q2
