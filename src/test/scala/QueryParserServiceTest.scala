@@ -36,4 +36,9 @@ class QueryParserServiceTest extends munit.FunSuite {
         val q1: Query = Query(0, Head(List()), Set(Atom("R", List(Variable("x"), Constant("a"))), Atom("S", List(Variable("y"), Constant("b"))), Atom("T", List(Variable("z"), Constant("c")))))
         val q2: Query = QueryParserService.parse("Answer() :- R(x,'a'),S(y,'b'),T(z,'c')")
         assertEquals(q1, q2)
+
+    test("Parser test 8"):
+        val q = QueryParserService.parse("Answer(z, y, x) :- R2(x, y), R3(y, z), R1(z, x)")
+        val atom = Atom("R2", List(Variable("x"), Variable("y")))
+        assert(q.body.contains(atom))
 }

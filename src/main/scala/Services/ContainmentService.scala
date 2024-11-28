@@ -7,13 +7,23 @@ import scala.annotation.switch
 
 object ContainmentService:
     def isContainedIn(a: Query, b: Query, log: Boolean = true): Boolean = 
+        if (a.head.terms.length != b.head.terms.length)
+            if (log)
+                println("q1 and q2 have head atoms with different arities.")
+            return false
+        
         val termsQueryA: Set[Term] = extractTermsFromQuery(a)
         val termsQueryB: Set[Term] = extractTermsFromQuery(b)
-
+        
+        // println("First query: " + a)
+        // println("Second query: " + b)
         // generates all possible homomorphisms of the two queries B -> A
         val possibleHomomorphisms: List[Homomorphism] = generateAllHomomorphisms(termsQueryB, termsQueryA)
+        // println("Possible homomorphisms: " + possibleHomomorphisms.length)
 
-        val validHomomorphism: Option[Homomorphism] = validHomomorphismExists(a, b, possibleHomomorphisms.filter(u => u.isValid()))
+        val filteredHomomorphism = possibleHomomorphisms.filter(u => u.isValid())
+
+        val validHomomorphism: Option[Homomorphism] = validHomomorphismExists(a, b, filteredHomomorphism)
 
         if (log)
             println(s"q1 is: $a")
@@ -57,10 +67,12 @@ object ContainmentService:
         database.toSet
 
     def validHomomorphismExists(a: Query, b: Query, possibleHomomorphisms: List[Homomorphism]): Option[Homomorphism] =
-        possibleHomomorphisms.find { homomorphism =>
-            val substitutedQuery: Query = substituteQueryTerms(b, homomorphism)
-            substitutedQuery.equals(a)
-        }
+        possibleHomomorphisms.find(homomorphism => atomsContained(substituteQueryTerms(b, homomorphism), a))
+
+    def atomsContained(q1: Query, q2: Query): Boolean =
+        val head = q1.head == q2.head
+        val body = q1.body.forall(atom => q2.body.contains(atom))
+        head && body
 
     def someCandidateContained(query: Query, candidates: List[Query]): Boolean =
         candidates.exists { candidate =>

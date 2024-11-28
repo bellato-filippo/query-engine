@@ -1,6 +1,5 @@
 package Models
 
-import upickle.default._
 import scala.compiletime.ops.double
 import scala.collection.BuildFrom.buildFromString
 
@@ -37,8 +36,3 @@ case class Homomorphism(val source: Set[Term], val destination: Set[Term], val m
         && isMapValidForDestination()
         && isActiveDomainVariablesMapped()
         && isActiveDomainConstantMapped()
-
-    
-
-object Homomorphism:
-    implicit val rw: ReadWriter[Homomorphism] = macroRW
