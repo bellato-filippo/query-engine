@@ -16,6 +16,9 @@ class Query(val queryId: Int, val head: Head, val body: Set[Atom]):
     
     def isMinimal(): Boolean = 
         Services.QueryMinimizerService.isMinimal(this)
+
+    def isBoolean(): Boolean = 
+        head.terms.isEmpty
     
     override def toString(): String = 
         s"${head.toString()} :- ${body.map(_.toString).mkString(",")}"
