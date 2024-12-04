@@ -1,42 +1,24 @@
 package Models
 
-import java.io._
-
-
-enum TermType:
-    case Var, Cons
-
-class Term(val name: String, val termType: TermType):
-    override def equals(that: Any): Boolean = that match
-        case t: Term => this.name == t.name && this.termType == t.termType
-        case _ => false
-    
-    override def toString(): String = 
-        if (termType == TermType.Cons)
-            s"\'$name\'"
-        else
-            name
-
-class Variable(name: String) extends Term(name, TermType.Var)
-class Constant(name: String) extends Term(name, TermType.Cons)
-
-class Atom(val name: String, val terms: List[Term]):
-    override def equals(that: Any): Boolean = that match
-        case a: Atom => this.name == a.name && this.terms == a.terms
-        case _ => false
-    
-    override def toString(): String = 
-        s"$name(${terms.map(_.toString).mkString(",")})"
-
-class Head(terms: List[Term]) extends Atom("Answer", terms)
-
 class Query(val queryId: Int, val head: Head, val body: Set[Atom]):
-    val path = s"./src/test/results/test-aciclicity-${this.queryId}.txt"
-    private val writer = new PrintWriter(new FileWriter(path, true))
-
     override def equals(that: Any): Boolean = that match
         case q: Query => this.queryId == q.queryId && this.head == q.head && this.body.toSet == q.body.toSet
         case _ => false
+
+    override def hashCode(): Int =
+        val prime = 31
+        val headHash = if (head != null) head.hashCode else 0
+        val bodyHash = if (body != null) body.hashCode else 0
+        prime * (prime * queryId + headHash) + bodyHash
+
+    infix def isContainedIn(query: Query): Boolean = 
+        Services.ContainmentService.isContainedIn(this, query)
+    
+    def isMinimal(): Boolean = 
+        Services.QueryMinimizerService.isMinimal(this)
+
+    def isBoolean(): Boolean = 
+        head.terms.isEmpty
     
     override def toString(): String = 
         s"${head.toString()} :- ${body.map(_.toString).mkString(",")}"

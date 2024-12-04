@@ -1,8 +1,17 @@
 package Models
 
 import scala.compiletime.ops.double
+import scala.collection.BuildFrom.buildFromString
 
-class Homomorphism(val source: Set[Term], val destination: Set[Term], val map: Map[Term, Term]):
+
+case class Homomorphism(val source: Set[Term], val destination: Set[Term], val map: Map[Term, Term]):
+    override def toString(): String =
+        map.map { case (key, value) =>
+            s"${key.toString} to ${value.toString}"
+        }.mkString("\n")
+
+
+
     def isMapValidForSource(): Boolean = 
         map.keys.forall(source.contains)
 
@@ -20,6 +29,7 @@ class Homomorphism(val source: Set[Term], val destination: Set[Term], val map: M
                 allMapped = false
         }
         allMapped
+        
 
     def isValid(): Boolean = 
         isMapValidForSource()
