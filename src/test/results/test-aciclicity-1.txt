@@ -1,0 +1,12 @@
+GYO for query: Answer() :- R(y,z),R(x,y),R(z,x),R(z,x,y)
+We remove the ear: Set(y, z)
+Current hypergraph edges are: {x, y}; {z, x}; {z, x, y}
+We remove the ear: Set(x, y)
+Current hypergraph edges are: {z, x}; {z, x, y}
+We remove the ear: Set(z, x)
+Current hypergraph edges are: {z, x, y}
+We remove the ear: Set(z, x, y)
+Current hypergraph edges are: 
+Algorithm terminate with an empty query
+GYO for query: Answer() :- R(x,y),R(y,z),R(x,z)
+no more ears
