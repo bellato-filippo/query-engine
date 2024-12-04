@@ -1,6 +1,12 @@
 package Models
 
+import java.io._
+
 class Query(val queryId: Int, val head: Head, val body: Set[Atom]):
+    val path = s"./src/test/results/test-aciclicity-${this.queryId}.txt"
+    
+    private val writer = new PrintWriter(new FileWriter(path, true))
+
     override def equals(that: Any): Boolean = that match
         case q: Query => this.queryId == q.queryId && this.head == q.head && this.body.toSet == q.body.toSet
         case _ => false
@@ -47,9 +53,3 @@ class Query(val queryId: Int, val head: Head, val body: Set[Atom]):
         else writer.println("Algorithm terminate with an empty query")
         writer.close()
         acyclic.edges.isEmpty
-            //se l'edge e è un ear allora lo rimuovo
-            //richiamo la funzione GYOAlghoritm
-
-
-      //nell'homomorphismo posso mappare solo variabili della stessa relazione
-      //1 step: mappare le variabili nell'header
