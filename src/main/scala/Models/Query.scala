@@ -68,9 +68,6 @@ class Query(val queryId: Int, val head: Head, val body: Set[Atom]):
             //se l'edge e è un ear allora lo rimuovo
             //richiamo la funzione GYOAlghoritm
 
-    def isContainedIn(q2: Query): Boolean =
-      
-      true
 
       //nell'homomorphismo posso mappare solo variabili della stessa relazione
       //1 step: mappare le variabili nell'header
