@@ -22,3 +22,36 @@ class Query(val queryId: Int, val head: Head, val body: Set[Atom]):
     
     override def toString(): String = 
         s"${head.toString()} :- ${body.map(_.toString).mkString(",")}"
+    
+    def GyoAlgorithm(hypergraph: Hypergraph): Hypergraph =
+        //per ogni edge guardo se è un orecchio
+        if (hypergraph.edges.isEmpty)
+          return hypergraph
+
+        hypergraph.edges.foreach(e => {
+            if (hypergraph.isEar(e)) {
+                hypergraph.edges = hypergraph.edges - e
+                println("We remove the ear: " + e)
+                println("Current hypergraph edges are: " + hypergraph.edges.map(_.mkString("{",", ","}")).mkString("; ") )
+                return GyoAlgorithm(hypergraph)
+            }
+        })
+        hypergraph
+        
+    def isAcyclic: Boolean =
+        println("GYO for query: " + this.toString())
+        val h: Hypergraph = new Hypergraph(this)
+        val acyclic: Hypergraph = GyoAlgorithm(h)
+        if(acyclic.edges.nonEmpty)
+          println("no more ears")
+        else println("Algorithm terminate with an empty query")
+        acyclic.edges.isEmpty
+            //se l'edge e è un ear allora lo rimuovo
+            //richiamo la funzione GYOAlghoritm
+
+    def isContainedIn(q2: Query): Boolean =
+      
+      true
+
+      //nell'homomorphismo posso mappare solo variabili della stessa relazione
+      //1 step: mappare le variabili nell'header
