@@ -1,0 +1,7 @@
+q1 is: Answer() :- A(x,x),D(x,x)
+q2 is: Answer() :- A(x,y),B(y,z),C(z,w,u,'V')
+A possible counterexample database D contains the following atoms:
+D('x','x')
+A('x','x')
+Then q1(D) is true.
+However, q2(D) is false.

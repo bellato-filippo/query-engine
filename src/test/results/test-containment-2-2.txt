@@ -1,0 +1,10 @@
+q1 is: Answer() :- A(x,y),B(y,z),C(z,w,u,'V'),D(w,y)
+q2 is: Answer() :- A(x,y),B(y,z),C(z,w,u,'V'),D(w,y)
+A possible homomorphism h from q2 to q1 contains the following mappings:
+u to u
+x to x
+y to y
+w to w
+z to z
+'V' to 'V'
+Then h(q2) is: Answer() :- A(x,y),B(y,z),C(z,w,u,'V'),D(w,y)

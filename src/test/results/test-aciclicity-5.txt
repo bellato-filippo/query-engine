@@ -1,0 +1,6 @@
+GYO for query: Services.AcyclicityService$@60918a0d
+We remove the ear: Set(x, y)
+Current hypergraph edges are: {y, z}
+We remove the ear: Set(y, z)
+Current hypergraph edges are: 
+Algorithm terminate with an empty query

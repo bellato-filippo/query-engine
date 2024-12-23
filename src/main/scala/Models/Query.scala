@@ -17,7 +17,7 @@ class Query(var queryId: Int, val head: Head, val body: Set[Atom]):
     infix def isContainedIn(query: Query): Boolean = 
         Services.ContainmentService.isContainedIn(this, query)
     
-    def isMinimal(): Boolean = 
+    def isMinimal: Boolean = 
         Services.QueryMinimizerService.isMinimal(this)
 
     def isBoolean(): Boolean = 

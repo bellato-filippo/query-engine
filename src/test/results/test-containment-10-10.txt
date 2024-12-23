@@ -1,0 +1,7 @@
+q1 is: Answer(z,z) :- E(z,y),E(y,z),E(y,w)
+q2 is: Answer(z,z) :- E(z,y),E(y,z),E(y,w)
+A possible homomorphism h from q2 to q1 contains the following mappings:
+z to z
+y to y
+w to z
+Then h(q2) is: Answer(z,z) :- E(z,y),E(y,z)

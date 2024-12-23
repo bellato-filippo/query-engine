@@ -1,0 +1,11 @@
+queryId,isAcyclic,isMinimal
+1,true,true
+2,false,true
+3,true,true
+4,true,true
+5,true,true
+6,true,false
+7,true,false
+8,true,false
+9,true,false
+10,true,false

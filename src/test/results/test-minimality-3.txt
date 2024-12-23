@@ -1,0 +1,2 @@
+Minimization for query: Answer() :- A(x,x),D(x,x)
+The query is minimal.

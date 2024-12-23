@@ -1,0 +1,6 @@
+Minimization for query: Answer(w) :- E(w,w),E(w,u)
+Remove atom E(w,u) by the virtue of the homomorphism containing the following mappings:
+w to w
+u to w
+Current query is: Answer(w) :- E(w,w)
+The query is minimal.

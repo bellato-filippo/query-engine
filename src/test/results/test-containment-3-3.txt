@@ -1,0 +1,5 @@
+q1 is: Answer() :- A(x,x),D(x,x)
+q2 is: Answer() :- A(x,x),D(x,x)
+A possible homomorphism h from q2 to q1 contains the following mappings:
+x to x
+Then h(q2) is: Answer() :- A(x,x),D(x,x)

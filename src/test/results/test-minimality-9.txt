@@ -1,0 +1,8 @@
+Minimization for query: Answer(x,y) :- E(x,y),E(y,z),E(z,y),E(y,w)
+Remove atom E(y,w) by the virtue of the homomorphism containing the following mappings:
+x to x
+y to y
+z to z
+w to z
+Current query is: Answer(x,y) :- E(x,y),E(y,z),E(z,y)
+The query is minimal.

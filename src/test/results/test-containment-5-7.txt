@@ -1,0 +1,7 @@
+q1 is: Answer(x) :- E(x,y),E(y,z)
+q2 is: Answer(x) :- E(x,x),E(x,y),E(y,z)
+A possible counterexample database D contains the following atoms:
+E('x','y')
+E('y','z')
+Then q1(D) contains the tuple ('x')
+However, ('x') is not in q2(D) since q2(D) is empty.
