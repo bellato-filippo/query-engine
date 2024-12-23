@@ -2,7 +2,7 @@ package Models
 
 import java.io._
 
-class Query(val queryId: Int, val head: Head, val body: Set[Atom]):
+class Query(var queryId: Int, val head: Head, val body: Set[Atom]):
     val path = s"./src/test/results/test-aciclicity-${this.queryId}.txt"
     
     private val writer = new PrintWriter(new FileWriter(path, true))
