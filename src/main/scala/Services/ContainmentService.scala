@@ -3,10 +3,13 @@ package Services
 import scala.collection.mutable
 import scala.compiletime.ops.boolean
 import Models.*
-import scala.annotation.switch
+import java.io._
 
 object ContainmentService:
 	def isContainedIn(a: Query, b: Query, log: Boolean = true): Boolean = 
+		val path = s"./src/test/results/test-containment-${a.queryId}-${b.queryId}.txt"
+		val writer = new PrintWriter(new FileWriter(path, true))
+
 		if (a.head.terms.length != b.head.terms.length) {
 			if (log) println("q1 and q2 have head atoms with different arities.")
 			return false
@@ -15,28 +18,28 @@ object ContainmentService:
 		val validHomomorphism = generateValidHomomorphism(a, b)
 
 		if (log)
-			println(s"q1 is: $a")
-			println(s"q2 is: $b")
+			writer.println(s"q1 is: $a")
+			writer.println(s"q2 is: $b")
 
 		validHomomorphism match {
 			case Some(homomorphism) =>
 				if (log)
-					println(s"A possible homomorphism h from q2 to q1 contains the following mappings:")
-					println(homomorphism)
-					println(s"Then h(q2) is: ${substituteQueryTerms(b, homomorphism)}")
+					writer.println(s"A possible homomorphism h from q2 to q1 contains the following mappings:")
+					writer.println(homomorphism)
+					writer.println(s"Then h(q2) is: ${substituteQueryTerms(b, homomorphism)}")
 				true
 			case None =>
 				if (log) {
-					println("A possible counterexample database D contains the following atoms:")
+					writer.println("A possible counterexample database D contains the following atoms:")
 					val database = createCounterexampleDatabase(a, b)
-					println(database.map(_.toString).mkString("\n"))
+					writer.println(database.map(_.toString).mkString("\n"))
 					if (a.isBoolean() && b.isBoolean())
-						println("Then q1(D) is true.")
-						println(s"However, q2(D) is false.")
+						writer.println("Then q1(D) is true.")
+						writer.println(s"However, q2(D) is false.")
 					else
 						val outputValue = computeQueryOnDatabase(a, database)
-						println(s"Then q1(D) contains the tuple $outputValue")
-						println(s"However, $outputValue is not in q2(D) since q2(D) is empty.")
+						writer.println(s"Then q1(D) contains the tuple $outputValue")
+						writer.println(s"However, $outputValue is not in q2(D) since q2(D) is empty.")
 				}
 				false
 		}
