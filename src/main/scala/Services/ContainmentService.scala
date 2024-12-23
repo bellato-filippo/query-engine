@@ -50,26 +50,20 @@ object ContainmentService:
 		generateValidMapping(termsQueryB.toList, termsQueryA.toSet, Map.empty, a, b)
 	}
 
-	def generateValidMapping(
-		source: List[Term],
-		destination: Set[Term],
-		currentMapping: Map[Term, Term],
-		a: Query,
-		b: Query
-	): Option[Homomorphism] = source match {
-		case Nil =>
-			// All terms in the source are mapped; validate the current mapping
-			val homomorphism = Homomorphism(source.toSet, destination, currentMapping)
-			if (atomsContained(substituteQueryTerms(b, homomorphism), a)) Some(homomorphism)
-			else None
+	def generateValidMapping(source: List[Term], destination: Set[Term], currentMapping: Map[Term, Term], a: Query, b: Query): Option[Homomorphism] =
+		source match
+			case Nil =>
+				// All terms in the source are mapped; validate the current mapping
+				val homomorphism = Homomorphism(source.toSet, destination, currentMapping)
+				if (atomsContained(substituteQueryTerms(b, homomorphism), a)) Some(homomorphism)
+				else None
 
-		case sourceTerm :: remainingSource =>
-			// Try mapping the current sourceTerm to each term in the destination
-			destination.view.flatMap { destinationTerm =>
-				val updatedMapping = currentMapping + (sourceTerm -> destinationTerm)
-				generateValidMapping(remainingSource, destination, updatedMapping, a, b)
-			}.headOption // Short-circuit if a valid homomorphism is found
-	}
+			case sourceTerm :: remainingSource =>
+				// Try mapping the current sourceTerm to each term in the destination
+				destination.view.flatMap { destinationTerm =>
+					val updatedMapping = currentMapping + (sourceTerm -> destinationTerm)
+					generateValidMapping(remainingSource, destination, updatedMapping, a, b)
+				}.headOption // Short-circuit if a valid homomorphism is found
 
 	def computeQueryOnDatabase(query: Query, database: Set[Atom]): String =
 		val mapping: mutable.Map[Term, Term] = mutable.Map.empty                       
