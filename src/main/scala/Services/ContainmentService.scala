@@ -12,6 +12,7 @@ object ContainmentService:
 
 		if (a.head.terms.length != b.head.terms.length) {
 			if (log) writer.println("q1 and q2 have head atoms with different arities.")
+			writer.close()
 			return false
 		}
 
@@ -21,7 +22,7 @@ object ContainmentService:
 			writer.println(s"q1 is: $a")
 			writer.println(s"q2 is: $b")
 
-		validHomomorphism match {
+		val result = validHomomorphism match {
 			case Some(homomorphism) =>
 				if (log)
 					writer.println(s"A possible homomorphism h from q2 to q1 contains the following mappings:")
@@ -43,6 +44,8 @@ object ContainmentService:
 				}
 				false
 		}
+		writer.close()
+		result
 
 	def generateValidHomomorphism(a: Query, b: Query): Option[Homomorphism] = {
 		val termsQueryA = extractTermsFromQuery(a)

@@ -10,7 +10,9 @@ object QueryMinimizerService:
 
 		if (log)
 			writer.println(s"Minimization for query: $query")
-		isMinimalRecursive(query, log, writer)
+		val result = isMinimalRecursive(query, log, writer)
+		writer.close()
+		result
 
 	def isMinimalRecursive(query: Query, log: Boolean, writer: PrintWriter): Boolean = {
 		val allMinimal = query.body.forall { atom =>
