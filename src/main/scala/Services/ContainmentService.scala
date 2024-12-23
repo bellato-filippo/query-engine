@@ -11,7 +11,7 @@ object ContainmentService:
 		val writer = new PrintWriter(new FileWriter(path, true))
 
 		if (a.head.terms.length != b.head.terms.length) {
-			if (log) println("q1 and q2 have head atoms with different arities.")
+			if (log) writer.println("q1 and q2 have head atoms with different arities.")
 			return false
 		}
 
