@@ -22,14 +22,9 @@ case class Homomorphism(val source: Set[Term], val destination: Set[Term], val m
         source.filter(u => u.termType == TermType.Var).forall(map.contains)
 
     def isActiveDomainConstantMapped(): Boolean = 
-        var allMapped = true
-
-        source.filter(u => u.termType == TermType.Cons).foreach { item =>
-            if (!map.get(item).contains(item)) then
-                allMapped = false
-        }
-        allMapped
-        
+    source
+      .filter(_.termType == TermType.Cons)
+      .forall(item => map.get(item) == Some(item))
 
     def isValid(): Boolean = 
         isMapValidForSource()
