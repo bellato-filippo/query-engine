@@ -40,7 +40,7 @@ object Main extends App:
   val mainFile = new java.io.PrintWriter(s"./src/test/results/main-output.csv")
   mainFile.println(s"queryId,isAcyclic,isMinimal")
   for (query <- queries) {
-    mainFile.println(s"${query.queryId},${query.isAcyclic},${query.isMinimal}")
+    mainFile.println(s"${query.queryId},${if query.isAcyclic then 1 else 0},${if query.isMinimal then 1 else 0}")
   }
 
   // containment
@@ -48,7 +48,7 @@ object Main extends App:
   containmentFile.println(s"queryId1,queryId2,isContainedIn")
   for (query1 <- queries) {
     for (query2 <- queries) {
-      containmentFile.println(s"${query1.queryId},${query2.queryId},${query1 isContainedIn query2}")
+      containmentFile.println(s"${query1.queryId},${query2.queryId},${if query1 isContainedIn query2 then 1 else 0}")
     }
   }
 
