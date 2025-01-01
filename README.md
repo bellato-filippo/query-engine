@@ -49,3 +49,12 @@ To test if a query is minimal we invoke the `isMinimal` method as follows
 val q = QueryParserService.parse("Answer(x) :- R(x, y), S(z)")
 val isMinimal = q.isMinimal // true
 ```
+
+# Logs and tests
+The code already contains some tests for each of the implemented features. There is a test class to test the following:
+* `AcyclicityTest` tests the `isAcyclic` method
+* `ContainmentServiceTest` tests the containment service
+* `HomomorphismTest` tests the homomorphism class
+* `QueryMinimizerServiceTest` tests the query minimizer service
+* `QueryParserServiceTest` tests the parser service
+* `QueryTest` tests the query for equality
