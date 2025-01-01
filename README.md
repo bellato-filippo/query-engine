@@ -58,3 +58,5 @@ The code already contains some tests for each of the implemented features. There
 * `QueryMinimizerServiceTest` tests the query minimizer service
 * `QueryParserServiceTest` tests the parser service
 * `QueryTest` tests the query for equality
+
+The logs of the methods (both the txt files and csv files) are saved in the test/results folder.
