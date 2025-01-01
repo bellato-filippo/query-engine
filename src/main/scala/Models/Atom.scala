@@ -6,7 +6,7 @@ class Atom(val name: String, val terms: List[Term]):
             case a: Atom =>
                 this.name == a.name && this.terms.size == a.terms.size && 
                 this.terms.zip(a.terms).forall { case (term1, term2) =>
-                    term1 == term2 // This calls your custom `equals` for `Term`
+                    term1 == term2
                 }
             case _ => false
         }
