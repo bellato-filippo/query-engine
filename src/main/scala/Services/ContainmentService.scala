@@ -66,7 +66,7 @@ object ContainmentService:
 				destination.view.flatMap { destinationTerm =>
 					val updatedMapping = currentMapping + (sourceTerm -> destinationTerm)
 					generateValidMapping(remainingSource, destination, updatedMapping, a, b)
-				}.headOption // Short-circuit if a valid homomorphism is found
+				}.headOption
 
 	def computeQueryOnDatabase(query: Query, database: Set[Atom]): String =
 		val mapping: mutable.Map[Term, Term] = mutable.Map.empty                       
