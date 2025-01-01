@@ -1,4 +1,4 @@
-GYO for query: Services.AcyclicityService$@60918a0d
+GYO for query: Services.AcyclicityService$@33d662a
 We remove the ear: Set(w)
 Current hypergraph edges are: {w, u}
 We remove the ear: Set(w, u)

@@ -1,4 +1,4 @@
-GYO for query: Services.AcyclicityService$@60918a0d
+GYO for query: Services.AcyclicityService$@33d662a
 We remove the ear: Set(x)
 Current hypergraph edges are: 
 Algorithm terminate with an empty query
